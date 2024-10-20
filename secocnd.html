@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Ramanujan Magic Square</title>
+    <style>
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #f8e8d1;
+        }
+        td {
+            border: 1px solid #000;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: #404040;
+        }
+        input {
+            width: 90%;
+            height: 40px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #a4d8ea;
+        }
+    </style>
+</head>
+<body>
+    <div id="div2">
+        <table class="mytable">
+            <tr>
+              <td><input type="number" id="input1" class="input-field" min="0" max="99" maxlength="2" title="Input a number between 0 and 99"></td>
+              <td><input type="number" id="input2" class="input-field" min="0" max="99" maxlength="2" title="Input a number between 0 and 99"></td>
+              <td><input type="number" id="input3" class="input-field" min="0" max="99" maxlength="2" title="Input a number between 0 and 99"></td>
+              <td><input type="number" id="input4" class="input-field" min="0" max="99" maxlength="2" title="Input a number between 0 and 99"></td>
+            </tr>
+            <tr>
+              <td id="cell-4"></td>
+              <td id="cell-5"></td>
+              <td id="cell-6"></td>
+              <td id="cell-7"></td>
+            </tr>
+            <tr>
+              <td id="cell-8"></td>
+              <td id="cell-9"></td>
+              <td id="cell-10"></td>
+              <td id="cell-11"></td>
+            </tr>
+            <tr>
+              <td id="cell-12"></td>
+              <td id="cell-13"></td>
+              <td id="cell-14"></td>
+              <td id="cell-15"></td>
+            </tr>
+          </table>
+          <button id="generate-btn">Generate</button>
+    </div>
+
+    <script>
+      const inputFields = document.querySelectorAll('.input-field');
+      const cells = document.querySelectorAll('td');
+      const generateBtn = document.getElementById('generate-btn');
+      const resetBtn = document.getElementById('reset-btn');
+    
+      // Automatically move to the next input field after entering 2 digits
+      inputFields.forEach((input, index) => {
+        input.addEventListener('input', () => {
+          if (input.value.length === 2) {  // Move to the next input after 2 digits
+            if (index < inputFields.length - 1) {
+              inputFields[index + 1].focus();
+            }
+          }
+        });
+      });
+
+      generateBtn.addEventListener('click', generateRamanujanSquare);
+      resetBtn.addEventListener('click', resetTable);
+    
+      function generateRamanujanSquare() {
+        const inputValues = Array.from(inputFields).map(input => parseInt(input.value));
+        
+        // Check if all input values are valid
+        if (inputValues.some(isNaN)) {
+          alert("Please enter valid numbers in all input fields.");
+          return;
+        }
+    
+        // Initialize the Ramanujan Square array
+        const ramanujanSquare = [];
+    
+        // Fill the first row with input values
+        ramanujanSquare.push([...inputValues]);
+    
+        // Fill the remaining rows based on magic square rules
+        ramanujanSquare.push([
+          inputValues[0] - 20,
+          inputValues[1] - 2,
+          inputValues[2] + 1,
+          inputValues[3] + 21
+        ]);
+    
+        ramanujanSquare.push([
+          inputValues[0] - 19,
+          inputValues[1] + 20,
+          inputValues[2] - 15,
+          inputValues[3] + 14
+        ]);
+    
+        ramanujanSquare.push([
+          inputValues[0] - 21,
+          inputValues[1] + 10,
+          inputValues[2] - 6,
+          inputValues[3] + 17
+        ]);
+    
+        // Display the magic square in the table
+        let index = 0;
+        for (let i = 0; i < 4; i++) {
+          for (let j = 0; j < 4; j++) {
+            cells[index].textContent = ramanujanSquare[i][j];
+            index++;
+          }
+        }
+        
+        // Show the reset button after generating the magic square
+        resetBtn.style.display = 'block';
+        generateBtn.style.display = 'none';  // Hide generate button after generation
+      }
+
+      function resetTable() {
+        // Clear input fields and focus on the first field
+        inputFields.forEach(input => {
+          input.value = '';
+        });
+        inputFields[0].focus();  // Focus back on the first input
+
+        // Clear the table cells
+        cells.forEach(cell => {
+          if (!cell.querySelector('input')) {
+            cell.textContent = '';
+          }
+        });
+
+        // Hide the reset button and show generate button again
+        resetBtn.style.display = 'none';
+        generateBtn.style.display = 'block';
+      }
+    </script>
+    
+</body>
+</html>
